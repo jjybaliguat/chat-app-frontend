@@ -10,11 +10,12 @@ import { useLoginMutation } from '@/redux/authApiSlice';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/userAction';
 import { useRouter } from 'next/navigation';
+import { notification } from 'antd';
 
 
 
 const Login = () => {
-
+  const [api, contextHolder] = notification.useNotification();
   const [showPassword, setShowPassword] = useState(false)
   const [login] = useLoginMutation()
   const dispatch = useDispatch()
@@ -44,15 +45,24 @@ const Login = () => {
           const user = await login(formik.values).unwrap()
           console.log(user);
           dispatch(setUser({...user}))
+          api['success']({
+            message: "Successfully logged in, redirecting...",
+            placement: 'topLeft'
+        });
           router.push("/chats")
         } catch (error) {
           setErrorMess(error.data.message)
+          api['error']({
+            message: error.data.message,
+            placement: 'topLeft'
+        });
         }
     }
   })
   
   return (
     <>
+    {contextHolder}
       <div
       className='bg-white h-full w-full p-5'
       >
