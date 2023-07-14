@@ -1,6 +1,5 @@
 "use client"
 
-import Chats from '@/components/Chats'
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import React, { useState, useEffect } from 'react'
@@ -8,6 +7,7 @@ import { useLoginMutation, useLoginstatusMutation, useLogoutMutation } from '@/r
 import { getLoginStatus, logOut, setLoggedIn } from '@/redux/userAction'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
+import Sidebar from '@/components/Sidebar'
 
 export default function RootLayout({ children }) {
     const [open, setOpen] = useState(false)
@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
           <>
           <Navbar toggleOpen={toggleOpen} open={open} />
             <div className={`flex flex-row h-[100vh] w-[100vw]`}>
-                <Chats
+                <Sidebar
                   isOpen={open}
                   onClose={()=>setOpen(false)}
                 />

@@ -198,29 +198,32 @@ const page = ({params}) => {
                     </div>
                         {
                             messages?.map((item, index)=> (
+                                <>
                                 <div className={`flex ${item?.sender?._id === user._id ? "flex-between" : ""}`}>
                                     <div></div>
                                     <div 
                                     key={index}
-                                    className={`flex flex-row gap-1`}>
+                                    className={`relative flex flex-row gap-1`}>
                                             <div className='group flex relative'>
                                                 <Avatar size="xs" style={`
                                                     ${item?.sender?._id === user._id ? "hidden" : "block"}
                                                 `} />
-                                                <span class="group-hover:opacity-100 transition-opacity bg-gray-100 px-1 text-sm text-black rounded-md absolute left-1/2 
+                                                <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1 text-sm text-black rounded-md absolute left-1/2 
                                                 -translate-x-1/2 translate-y-full opacity-0 m-4 z-50 mx-auto">{item?.sender?.name}</span>
                                             </div>
-                                            <div className='flex flex-col gap-1 '>
+                                            <div className='group flex relative'>
                                                 <div className={`message ${item?.sender?._id === user._id ? "bg-primary text-white" : "bg-secondary-100"}`}>
                                                     <h1
 
                                                     >{item?.message}
                                                     </h1>
                                                 </div>
-                                                <p className='text-[12px]'>{dayjs(item?.createAt).format("MM-DD-YYYY H:m A")}</p>
+                                                {/* <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
+                                                    -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">{dayjs(item?.createAt).format("MM-DD-YYYY H:m A")}</span> */}
                                             </div>
                                     </div>
                                 </div>
+                                </>
                             ))
                         }
                         {isTyping? (<LoadTyping />) : (<></>)}

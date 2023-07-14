@@ -40,7 +40,7 @@ const Notification = () => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="h-[300px] w-[250px] absolute cursor-pointer right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="h-[300px] overflow-y-auto w-[250px] absolute cursor-pointer right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
            {!notification?.length && <h1 className='text-center mt-[5rem] font-bold'>Nothing here!</h1>}
            {notification && (
             notification?.map((item, id)=>(
