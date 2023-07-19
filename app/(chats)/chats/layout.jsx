@@ -50,7 +50,7 @@ export default function RootLayout({ children }) {
                   isOpen={open}
                   onClose={()=>setOpen(false)}
                 />
-                <div className={`fixed md:relative h-[90%] w-[100vw] overflow-hidden`}>
+                <div className={`fixed md:relative h-[100vh] w-[100vw] overflow-hidden`}>
                 {children}
                 </div>
             </div>

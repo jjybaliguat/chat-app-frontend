@@ -1,6 +1,6 @@
 'use client'
  
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { PhoneIcon } from "@heroicons/react/24/solid";
 import { VideoCameraIcon } from "@heroicons/react/24/solid";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
@@ -38,10 +38,15 @@ const page = ({params}) => {
     const [loading, setLoading] = useState(false)
     const [openChatModal, setOpenChatModal] = useState(false)
     const notification = useSelector(store=>store.chat.notifications)
+    const messageRef = useRef()
 
     useEffect(()=>{
         getAllChats()
     },[])
+
+    useEffect(()=>{
+        messageRef.current?.scrollIntoView({behavior: "smooth"})
+    }, [messages])
 
     useEffect(()=> {
         setLoading(true)
@@ -160,7 +165,7 @@ const page = ({params}) => {
             chat={singleChat}
         />
         <div
-            className='relative w-[100%] h-[100%] pb-100px'
+            className='relative w-[100%] h-[100%]'
         >
             <div
             className='sticky md:absolute top-0 w-full h-[60px] flex flex-between px-10 bg-white shadow-md text-black z-40'
@@ -179,7 +184,7 @@ const page = ({params}) => {
                     className="h-6 w-6 text-primary cursor-pointer" />
                 </div>
             </div>
-            <div className='h-full bg-white w-[100%] relative text-black p-5 overflow-auto'>
+            <div className='h-full w-[100%] relative text-black p-5 overflow-auto'>
                 <div
                 className='flex flex-col mt-[70px] gap-2 justify-end md:pb-[5rem] pb-[8rem]'
                 >
@@ -203,6 +208,7 @@ const page = ({params}) => {
                                     <div></div>
                                     <div 
                                     key={index}
+                                    ref={messageRef}
                                     className={`relative flex flex-row gap-1`}>
                                             <div className='group flex relative'>
                                                 <Avatar size="xs" style={`
@@ -230,7 +236,7 @@ const page = ({params}) => {
                 </div>
             </div>
 
-            <div className='md:absolute fixed bottom-0 flex p-5 flex-between bg-white gap-5 h-fit w-[100%] 
+            <div className='md:absolute fixed bottom-0 flex p-5 flex-between bg-primary gap-5 h-fit w-[100%] 
             md:px-10 px-2 z-50'>
                 <div className='flex flex-row items-center gap-3'>
                     <PlusCircleIcon className="md:h-8 md:w-8 w-5 h-5 text-primary" />
