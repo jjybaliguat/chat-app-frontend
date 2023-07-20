@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import CreateGroupDialog from './createGroupDialog'
 import { Tab } from '@headlessui/react'
 
-const Sidebar = ({isOpen}) => {
+const Sidebar = ({isOpen, onClose}) => {
     const [open, setOpen] = useState(false)
     const [index, setIndex] = useState(0)
 
@@ -19,10 +19,9 @@ const Sidebar = ({isOpen}) => {
         <motion.div
         animate={{ 
             width: isOpen ? "350px" : "0px",
-            position: isOpen? "relative" : "absolute",
             left: isOpen? "0" : "-100%"
         }}
-            className={`left-0 flex flex-col gap-3 h-[100%] bg-white py-5 px-4 shadow-lg z-30`}
+            className={`fixed top-[70px] left-0 flex flex-col gap-3 h-[100%] bg-white py-5 px-4 shadow-lg z-50`}
         >
             <Tab.Group>
                 <Tab.List
@@ -52,7 +51,7 @@ const Sidebar = ({isOpen}) => {
                 <Tab.Panels className="h-[100vh] w-[350px] overflow-hidden">
                     <Tab.Panel
                     >
-                        <Chats />
+                        <Chats onClose={onClose} />
                     </Tab.Panel>
                     <Tab.Panel
                     className="bg-white h-full w-[100%]"

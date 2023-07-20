@@ -12,12 +12,25 @@ import { Avatar } from 'antd';
 
 
 
-const Chats = () => {
+const Chats = (props) => {
+    const {onClose} = props
     const params = useParams()
     const router = useRouter()
     const user = useSelector(store=>store.auth?.user)
     const chats = useSelector(store=>store.chat?.chats)
     const [search, setSearch] = useState('')
+    const [active, setActive] = useState(false)
+    const onlineUsers = useSelector(store=>store.auth.onlineUsers)
+    const [groupActive, setGroupActive] = useState(false)
+
+    const checkGroupActive = (users) => {
+        users.filter((current)=>current._id !== user._id).map((current)=>{
+            if(onlineUsers?.some((online)=>online.userId === current._id)){
+                setGroupActive(true)
+            }
+        })
+    }
+
 
   return (
     <>
@@ -42,12 +55,19 @@ const Chats = () => {
             chats?.filter((chat)=>
             chat?.chatName.toLowerCase().includes(search.toLowerCase())).map((item, index)=> (
                 <div key={index} className='flex flex-row gap-3 items-center cursor-pointer hover:bg-secondary-100 p-3 rounded-md'
-                onClick={()=>router.push(`/chats/${item._id}`)}
+                onClick={()=>{onClose(); router.push(`/chats/${item._id}`)}}
                 >
+                        <div className='relative'>
                             <Avatar
-                                size={30}
-                                icon={<img src="/avatardefault.png"/>}
-                            />
+                                    size={30}
+                                    icon={<img src="/avatardefault.png"/>}
+                                />
+                                {!item.isGroupChat && 
+                            <div className={`absolute bottom-0 right-0 h-[12px] w-[12px]
+                            ${item?.users[0]?._id === user._id ? onlineUsers?.some((current) => current.userId === item?.users[1]._id) ? "bg-success" : "bg-gray-400" : onlineUsers?.some((current) => current.userId === item?.users[0]._id) ? "bg-success" : "bg-gray-400"}
+                            rounded-full`} />
+                        }
+                        </div>
                             <div className='flex flex-col'>
                                 <h1 className='font-bold'>{item?.isGroupChat? item?.chatName.toUpperCase() : item?.users[0]?._id === user._id ? item?.users[1]?.name : item?.users[0]?.name}</h1>
                                 <p className="ml-1">{item.latestMessages?.message}</p>

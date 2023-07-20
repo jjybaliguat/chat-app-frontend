@@ -5,6 +5,10 @@ import { useLogoutMutation } from '@/redux/authApiSlice'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
+import { io } from 'socket.io-client';
+
+const ENDPOINT = process.env.nodeEnv === "development" ? process.env.DEV_APP_API : process.env.PRODUCTION_APP_API
+var socket
 
 const ProfileMenuDropDown = () => {
     const [logout] = useLogoutMutation()
@@ -14,8 +18,9 @@ const ProfileMenuDropDown = () => {
     const handleLogout = async() => {
         try {
             const response = await logout()
-            console.log(response);
             router.push("/")
+            socket = io(ENDPOINT)
+            socket.emit('offline', user)
         } catch (error) {
             console.log(error);
         }

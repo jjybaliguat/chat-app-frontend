@@ -4,6 +4,7 @@ const initialState = {
     user: null,
     token: null,
     logged_in: false,
+    onlineUsers: []
 }
 
 const authSlice = createSlice({
@@ -28,6 +29,9 @@ const authSlice = createSlice({
             const {logged_in} = action.payload
             state.logged_in = logged_in
         },
+        setOnlineUsers: (state, action) => {
+            state.onlineUsers = [...action.payload]
+        }
     }
 })
 
@@ -35,7 +39,8 @@ export const {
     setUser,
     logOut,
     setLoggedIn,
-    updateUser
+    updateUser,
+    setOnlineUsers
 } = authSlice.actions
 
 

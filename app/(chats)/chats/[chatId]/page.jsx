@@ -12,12 +12,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import { useFetchchatMutation, useGetallchatsMutation, useGetallmessagesMutation, useSendmessageMutation } from '@/redux/chatApislice';
 import { setChats, setNotification } from '@/redux/chatAction';
-import Avatar from '@/components/Avatar';
 import LoadTyping from '@/components/LoadTyping';
 import { generateChatsData } from '@/utils/generateChatData';
 import Spinner from '@/components/Spinner';
 import ChatInfoDialog from '@/components/chatInforDialog';
 import dayjs from 'dayjs';
+import { setOnlineUsers } from '@/redux/userAction';
+import Avatar from '@/components/Avatar';
 
 const ENDPOINT = process.env.nodeEnv === "development" ? process.env.DEV_APP_API : process.env.PRODUCTION_APP_API
 var socket, selectedChat;
@@ -38,11 +39,34 @@ const page = ({params}) => {
     const [loading, setLoading] = useState(false)
     const [openChatModal, setOpenChatModal] = useState(false)
     const notification = useSelector(store=>store.chat.notifications)
-    const messageRef = useRef()
+    const messageRef = useRef(null)
+    const [active, setActive] = useState(false)
+    const onlineUsers = useSelector((store=>store.auth.onlineUsers))
 
     useEffect(()=>{
         getAllChats()
     },[])
+
+    useEffect(()=>{
+        if(!(singleChat?.isGroupChat)){
+            if(singleChat?.users[0]._id === user._id){
+                setActive(onlineUsers?.some((active)=>active.userId === singleChat?.users[1]._id))
+            }else{
+                setActive(onlineUsers?.some((active)=>active.userId === singleChat?.users[0]._id))
+            }
+        }else{
+            const currentUsers = singleChat?.users.filter((item)=>item._id !== user._id)
+            let activeGroup = false
+            currentUsers?.map((item)=>{
+                if(onlineUsers?.some((user)=>user.userId === item._id)){
+                    activeGroup = true
+                }
+            })
+            setActive(activeGroup)
+        }
+    })
+
+
 
     useEffect(()=>{
         messageRef.current?.scrollIntoView({behavior: "smooth"})
@@ -77,6 +101,46 @@ const page = ({params}) => {
             socket.on("typing_stop", ()=>setIsTyping(false))
         }
     }, [])
+
+    useEffect(()=>{
+        const handleFocus = async () => {
+            socket.emit("setup", user);
+            socket.on("get-users", (users) => {
+                dispatch(setOnlineUsers(users))
+            });
+            };
+
+        const handleClose = () => {
+            if(user){
+                socket.emit("offline", user)
+            }
+        }
+        
+        const handleBlur = () => {
+            if(user) {
+                let lastFocus = new Date().getTime()
+                var timer = 600000
+
+                setTimeout(()=>{
+                    var timeNow = new Date().getTime()
+                    var timeDiff = timeNow - lastFocus
+
+                    if(timeDiff >= timer){
+                        socket.emit("offline", user)
+                    }
+                }, timer)
+            }
+          };
+
+          window.addEventListener('focus', handleFocus);
+          window.addEventListener('beforeunload', handleClose);
+          window.addEventListener('blur', handleBlur);
+
+          return () => {
+            window.removeEventListener('focus', handleFocus);
+            window.removeEventListener('beforeunload', handleBlur);
+          }; 
+    }, [user])
 
     useEffect(()=>{
         socket.on("message_received", (newMessage) => {
@@ -168,14 +232,25 @@ const page = ({params}) => {
             className='relative w-[100%] h-[100%]'
         >
             <div
-            className='sticky md:absolute top-0 w-full h-[60px] flex flex-between px-10 bg-white shadow-md text-black z-40'
+            className='fixed top-[70px] w-full h-[60px] max-w-[100vw] flex flex-between px-10 bg-white shadow-md text-black z-40'
             >
-                <h1 className='font-bold flex flex-row items-center gap-3'>
-                    <span><Avatar size="small" /></span>
-                    {
-                    singleChat?.isGroupChat? singleChat?.chatName.toUpperCase() : singleChat?.users[0]?._id === user._id ? singleChat?.users[1]?.name : singleChat?.users[0]?.name
-                    }
-                </h1>
+                <div className='flex flex-row items-center gap-3'>
+                    <span className='relative'><Avatar size="small" />
+                    <div className={`absolute h-[10px] w-[10px] bottom-0 right-0 
+                    ${active ? `bg-success` : `bg-gray-400`}    
+                    rounded-full`} />
+                    </span>
+                    <div className='flex flex-col gap-0'>
+                        <h1 className='font-bold flex flex-row items-center gap-3'>
+                        {
+                        singleChat?.isGroupChat? singleChat?.chatName.toUpperCase() : singleChat?.users[0]?._id === user._id ? singleChat?.users[1]?.name : singleChat?.users[0]?.name
+                        }
+                        </h1>
+                        {!singleChat.isGroupChat &&
+                        <p>{active ? "active now" : "offline"}</p>
+                        }
+                    </div>
+                </div>
                 <div className='flex flex-row gap-5'>
                     <PhoneIcon class="h-6 w-6 text-[red]" />
                     <VideoCameraIcon class="h-6 w-6 text-[red]" />
@@ -184,7 +259,7 @@ const page = ({params}) => {
                     className="h-6 w-6 text-primary cursor-pointer" />
                 </div>
             </div>
-            <div className='h-full w-[100%] relative text-black p-5 overflow-auto'>
+            <div className='h-full w-[100%] relative text-black pt-20 p-5 overflow-auto'>
                 <div
                 className='flex flex-col mt-[70px] gap-2 justify-end md:pb-[5rem] pb-[8rem]'
                 >
@@ -204,11 +279,9 @@ const page = ({params}) => {
                         {
                             messages?.map((item, index)=> (
                                 <>
-                                <div className={`flex ${item?.sender?._id === user._id ? "flex-between" : ""}`}>
+                                <div key={index} ref={messageRef} className={`flex ${item?.sender?._id === user._id ? "flex-between" : ""}`}>
                                     <div></div>
                                     <div 
-                                    key={index}
-                                    ref={messageRef}
                                     className={`relative flex flex-row gap-1`}>
                                             <div className='group flex relative'>
                                                 <Avatar size="xs" style={`
@@ -236,8 +309,8 @@ const page = ({params}) => {
                 </div>
             </div>
 
-            <div className='md:absolute fixed bottom-0 flex p-5 flex-between bg-primary gap-5 h-fit w-[100%] 
-            md:px-10 px-2 z-50'>
+            <div className='fixed bottom-0 flex p-4 flex-between bg-white gap-5 h-fit w-[100%] 
+            md:px-10 px-2 z-40'>
                 <div className='flex flex-row items-center gap-3'>
                     <PlusCircleIcon className="md:h-8 md:w-8 w-5 h-5 text-primary" />
                     <PhotoIcon className="md:h-8 md:w-8 h-5 w-5 text-primary" />
@@ -257,7 +330,7 @@ const page = ({params}) => {
                         type="submit"
                         disabled={message === ''}
                     >
-                        <PaperAirplaneIcon className={`h-8 w-8 ${message === '' ? "text-gray-100" : "text-primary"}`} />
+                        <PaperAirplaneIcon className={`h-8 w-8 ${message === '' ? "text-gray-300" : "text-primary"}`} />
                     </button>
                 </form>
             </div>
