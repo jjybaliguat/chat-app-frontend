@@ -52,7 +52,7 @@
   overflow: visible;
   overflow-wrap: break-word;
   box-sizing: border-box;
-  max-width: 300px;
+  max-width: fit-content;
   padding: 10px;
   border-radius: 15px;
 }

@@ -290,13 +290,16 @@ const page = ({params}) => {
                                                 <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1 text-sm text-black rounded-md absolute left-1/2 
                                                 -translate-x-1/2 translate-y-full opacity-0 m-4 z-50 mx-auto">{item?.sender?.name}</span>
                                             </div>
-                                            <div className='group flex relative'>
-                                                <div className={`message ${item?.sender?._id === user._id ? "bg-primary text-white" : "bg-secondary-100"}`}>
-                                                    <h1
-
-                                                    >{item?.message}
-                                                    </h1>
+                                            <div className='group flex flex-col relative'>
+                                                <div className={`${item?.sender?._id === user._id ? "flex-between flex-row" : ""}`}>
+                                                    <div></div>
+                                                    <div className={`message ${item?.sender?._id === user._id ? "bg-primary text-white" : "bg-secondary-100"}`}>
+                                                        <h1
+                                                        >{item?.message}
+                                                        </h1>
+                                                    </div>
                                                 </div>
+                                                <p className='text-[12px]'>{item?.sender?.name}</p>
                                                 {/* <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
                                                     -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">{dayjs(item?.createAt).format("MM-DD-YYYY H:m A")}</span> */}
                                             </div>
