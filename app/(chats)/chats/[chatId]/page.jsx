@@ -263,7 +263,7 @@ const page = ({params}) => {
             </div>
             <div className='h-full w-[100%] relative text-black pt-20 p-5 overflow-auto'>
                 <div
-                className='flex flex-col mt-[70px] gap-2 justify-end md:pb-[5rem] pb-[10rem]'
+                className='flex flex-col mt-[70px] gap-2 justify-end md:pb-[5rem] pb-[12rem]'
                 >
                     <div className='flex justify-center w-full'>
                         <div className='flex flex-col gap-5 items-center'>
