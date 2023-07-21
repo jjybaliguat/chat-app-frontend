@@ -20,9 +20,9 @@ const Navbar = ({open, toggleOpen}) => {
             <nav
                 className='flex-between w-full px-6 gap-5'
             >
-                <div className='flex items-center gap-5'>
+                <div className='flex flex-row-reverse md:flex-row items-center gap-5'>
                     <SearchBar
-                    divStyle="h-[50px] w-[250px] hidden md:flex"
+                    divStyle="h-[50px] w-[250px]"
                     inputStyle="gradient-bg  md:placeholder-white"
                     />
                     {
@@ -38,7 +38,7 @@ const Navbar = ({open, toggleOpen}) => {
                     }
                 </div>
                 <div>
-                    <h1 className='md:text-[2rem] text-[1rem] font-extrabold text-primary'>
+                    <h1 className='md:text-[2rem] text-[1rem] hidden md:flex font-extrabold text-primary'>
                         Welcome to Just-Chat
                     </h1>
                 </div>
