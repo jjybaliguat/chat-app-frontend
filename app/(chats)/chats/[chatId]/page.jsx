@@ -243,7 +243,7 @@ const page = ({params}) => {
                     rounded-full`} />
                     </span>
                     <div className='flex flex-col gap-0'>
-                        <h1 className='font-bold flex flex-row items-center gap-3'>
+                        <h1 className='font-bold flex flex-row items-center gap-3 text-[0.5rem] md:text-[1rem]'>
                         {
                         singleChat?.isGroupChat? singleChat?.chatName.toUpperCase() : singleChat?.users[0]?._id === user._id ? singleChat?.users[1]?.name : singleChat?.users[0]?.name
                         }
