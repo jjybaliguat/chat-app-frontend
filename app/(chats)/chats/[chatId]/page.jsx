@@ -17,8 +17,10 @@ import { generateChatsData } from '@/utils/generateChatData';
 import Spinner from '@/components/Spinner';
 import ChatInfoDialog from '@/components/chatInforDialog';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { setOnlineUsers } from '@/redux/userAction';
 import Avatar from '@/components/Avatar';
+dayjs.extend(relativeTime)
 
 const ENDPOINT = process.env.nodeEnv === "development" ? process.env.DEV_APP_API : process.env.PRODUCTION_APP_API
 var socket, selectedChat;
@@ -282,7 +284,7 @@ const page = ({params}) => {
                                 <div key={index} ref={messageRef} className={`flex ${item?.sender?._id === user._id ? "flex-between" : ""}`}>
                                     <div></div>
                                     <div 
-                                    className={`relative flex flex-row gap-1`}>
+                                    className={`relative flex flex-row gap-1 items-center`}>
                                             <div className='group flex relative'>
                                                 <Avatar size="xs" style={`
                                                     ${item?.sender?._id === user._id ? "hidden" : "block"}
@@ -291,6 +293,7 @@ const page = ({params}) => {
                                                 -translate-x-1/2 translate-y-full opacity-0 m-4 z-50 mx-auto">{item?.sender?.name}</span>
                                             </div>
                                             <div className='group flex flex-col relative'>
+                                                <p className='text-[12px]'>{dayjs(item.createdAt).fromNow()}</p>
                                                 <div className={`${item?.sender?._id === user._id ? "flex-between flex-row" : ""}`}>
                                                     <div></div>
                                                     <div className={`message ${item?.sender?._id === user._id ? "bg-primary text-white" : "bg-secondary-100"}`}>
@@ -299,7 +302,12 @@ const page = ({params}) => {
                                                         </h1>
                                                     </div>
                                                 </div>
-                                                <p className='text-[12px]'>{item?.sender?.name}</p>
+                                                {singleChat?.isGroupChat &&
+                                                    <div className={`${item?.sender?._id === user._id ? "flex-between flex-row" : ""}`}>
+                                                        <div></div>
+                                                        <p className='text-[12px]'>{item?.sender?._id === user._id ? "" : item?.sender?.name}</p>
+                                                    </div>
+                                                }
                                                 {/* <span class="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
                                                     -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">{dayjs(item?.createAt).format("MM-DD-YYYY H:m A")}</span> */}
                                             </div>
