@@ -18,11 +18,11 @@ const Navbar = ({open, toggleOpen}) => {
     <>
         <header className='flex items-center sticky top-0 z-50 h-[70px] w-[100vw] bg-white shadow-md'>
             <nav
-                className='flex-between w-full px-6 gap-5'
+                className='flex-between w-full px-6 gap-3'
             >
                 <div className='flex flex-row-reverse md:flex-row items-center gap-5'>
                     <SearchBar
-                    divStyle="h-[50px] w-[250px]"
+                    divStyle="h-[50px] md:w-[250px] w-[130px]"
                     inputStyle="gradient-bg  md:placeholder-white"
                     />
                     {
@@ -43,7 +43,7 @@ const Navbar = ({open, toggleOpen}) => {
                     </h1>
                 </div>
                 {/* Profile and notification section */}
-                <div className='flex flex-row gap-3 items-center'>
+                <div className='flex flex-row gap-0 items-center'>
                     <Notification />
                     <ProfileMenuDropDown />
                 </div>
