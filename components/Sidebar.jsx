@@ -21,7 +21,7 @@ const Sidebar = ({isOpen, onClose}) => {
             width: isOpen ? "350px" : "0px",
             left: isOpen? "0" : "-100%"
         }}
-            className={`fixed top-[70px] left-0 flex flex-col gap-3 h-[100%] bg-white py-5 px-4 shadow-lg z-50`}
+            className={`fixed top-[70px] left-0 flex flex-col gap-3 h-[100%] bg-white py-5 px-4 shadow-lg z-40`}
         >
             <Tab.Group>
                 <Tab.List

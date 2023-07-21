@@ -234,7 +234,7 @@ const page = ({params}) => {
             className='relative w-[100%] h-[100%]'
         >
             <div
-            className='fixed top-[70px] w-full h-[60px] max-w-[100vw] flex flex-between px-10 bg-white shadow-md text-black z-40'
+            className='fixed top-[70px] w-full h-[60px] max-w-[100vw] flex flex-between px-10 bg-white shadow-md text-black z-30'
             >
                 <div className='flex flex-row items-center gap-3'>
                     <span className='relative'><Avatar size="small" />
